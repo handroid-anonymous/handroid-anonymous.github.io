@@ -281,13 +281,15 @@
       object-fit: contain;
     }
 
-    .step-viewer {
+    .step-viewer,
+    .cad-viewer {
       position: absolute;
       inset: 0;
       background: #f8fafc;
     }
 
-    .step-viewer canvas {
+    .step-viewer canvas,
+    .cad-viewer {
       width: 100%;
       height: 100%;
     }
@@ -452,14 +454,23 @@
 
         <figure class="step-box">
           <div class="step-media hand">
-            <div class="step-viewer" data-step-src="assets/cad/dex-hand.step" data-step-name="Dexterous Hand STEP Model"></div>
+            <model-viewer
+              class="cad-viewer"
+              src="assets/cad/dex-hand.glb"
+              alt="Dexterous Hand CAD Model"
+              camera-controls
+              touch-action="pan-y"
+              interaction-prompt="auto"
+              exposure="0.9"
+              shadow-intensity="0.35">
+            </model-viewer>
             <div class="empty-step">
-              Dexterous Hand STEP Model
-              <span>Upload assets/cad/dex-hand.step. Drag with the mouse to rotate; use the wheel to zoom.</span>
+              Dexterous Hand CAD Model
+              <span>Loading assets/cad/dex-hand.glb. Drag with the mouse to rotate; use the wheel to zoom.</span>
             </div>
           </div>
           <figcaption class="step-caption">
-            Interactive STEP model for Handroid operating in dexterous hand form.
+            Interactive CAD model for Handroid operating in dexterous hand form.
           </figcaption>
         </figure>
       </div>
@@ -472,14 +483,23 @@
 
         <figure class="step-box">
           <div class="step-media humanoid">
-            <div class="step-viewer" data-step-src="assets/cad/humanoid.step" data-step-name="Humanoid STEP Model"></div>
+            <model-viewer
+              class="cad-viewer"
+              src="assets/cad/humanoid.glb"
+              alt="Humanoid CAD Model"
+              camera-controls
+              touch-action="pan-y"
+              interaction-prompt="auto"
+              exposure="0.9"
+              shadow-intensity="0.35">
+            </model-viewer>
             <div class="empty-step">
-              Humanoid STEP Model
-              <span>Upload assets/cad/humanoid.step. Drag with the mouse to rotate; use the wheel to zoom.</span>
+              Humanoid CAD Model
+              <span>Loading assets/cad/humanoid.glb. Drag with the mouse to rotate; use the wheel to zoom.</span>
             </div>
           </div>
           <figcaption class="step-caption">
-            Interactive STEP model for Handroid operating in humanoid form.
+            Interactive CAD model for Handroid operating in humanoid form.
           </figcaption>
         </figure>
       </div>
@@ -648,9 +668,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <script>
     document.querySelectorAll(".video-frame").forEach((frame) => {
       const video = frame.querySelector("video");
@@ -665,182 +683,19 @@
       });
     });
 
-    const stepImportPromise = window.occtimportjs
-      ? window.occtimportjs()
-      : Promise.reject(new Error("STEP parser failed to load."));
-
-    function setStepStatus(viewer, title, message) {
+    document.querySelectorAll(".cad-viewer").forEach((viewer) => {
       const placeholder = viewer.parentElement.querySelector(".empty-step");
       if (!placeholder) {
         return;
       }
 
-      placeholder.hidden = false;
-      placeholder.innerHTML = `${title}<span>${message}</span>`;
-    }
-
-    function buildStepMesh(resultMesh) {
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(resultMesh.attributes.position.array, 3)
-      );
-
-      if (resultMesh.attributes.normal) {
-        geometry.setAttribute(
-          "normal",
-          new THREE.Float32BufferAttribute(resultMesh.attributes.normal.array, 3)
-        );
-      } else {
-        geometry.computeVertexNormals();
-      }
-
-      geometry.setIndex(new THREE.BufferAttribute(Uint32Array.from(resultMesh.index.array), 1));
-
-      const meshColor = resultMesh.color
-        ? new THREE.Color(resultMesh.color[0], resultMesh.color[1], resultMesh.color[2])
-        : new THREE.Color(0xd7dee8);
-
-      const material = new THREE.MeshStandardMaterial({
-        color: meshColor,
-        roughness: 0.52,
-        metalness: 0.08,
-        side: THREE.DoubleSide
+      viewer.addEventListener("load", () => {
+        placeholder.hidden = true;
       });
 
-      const mesh = new THREE.Mesh(geometry, material);
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geometry, 45),
-        new THREE.LineBasicMaterial({
-          color: 0x1f2937,
-          transparent: true,
-          opacity: 0.26
-        })
-      );
-
-      const group = new THREE.Group();
-      group.add(mesh);
-      group.add(edges);
-      return group;
-    }
-
-    function fitCameraToObject(camera, controls, object) {
-      const box = new THREE.Box3().setFromObject(object);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      object.position.sub(center);
-
-      const centeredBox = new THREE.Box3().setFromObject(object);
-      const centeredSize = centeredBox.getSize(new THREE.Vector3());
-      const centeredTarget = centeredBox.getCenter(new THREE.Vector3());
-
-      const maxSize = Math.max(centeredSize.x, centeredSize.y, centeredSize.z) || 1;
-      const fov = THREE.MathUtils.degToRad(camera.fov);
-      const distance = (maxSize / (2 * Math.tan(fov / 2))) * 1.45;
-
-      camera.near = Math.max(distance / 100, 0.01);
-      camera.far = distance * 100;
-      camera.position.set(
-        centeredTarget.x + distance * 0.75,
-        centeredTarget.y - distance * 0.95,
-        centeredTarget.z + distance * 0.62
-      );
-      camera.lookAt(centeredTarget);
-      camera.updateProjectionMatrix();
-
-      controls.target.copy(centeredTarget);
-      controls.update();
-    }
-
-    async function initStepViewer(viewer) {
-      const source = viewer.dataset.stepSrc;
-      const modelName = viewer.dataset.stepName || "STEP Model";
-
-      setStepStatus(viewer, modelName, "Loading interactive STEP viewer...");
-
-      if (!source) {
-        setStepStatus(viewer, modelName, "Missing STEP file path.");
-        return;
-      }
-
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setClearColor(0xf8fafc, 1);
-      viewer.appendChild(renderer.domElement);
-      viewer.addEventListener("contextmenu", (event) => event.preventDefault());
-
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf8fafc);
-
-      const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 1000000);
-      camera.up.set(0, 0, 1);
-
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.08;
-      controls.enableZoom = true;
-      controls.mouseButtons = {
-        LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.ROTATE
-      };
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.62);
-      const keyLight = new THREE.DirectionalLight(0xffffff, 0.82);
-      const fillLight = new THREE.DirectionalLight(0xffffff, 0.32);
-      keyLight.position.set(4, -5, 6);
-      fillLight.position.set(-4, 4, 3);
-      scene.add(ambientLight, keyLight, fillLight);
-
-      const resize = () => {
-        const width = Math.max(viewer.clientWidth, 1);
-        const height = Math.max(viewer.clientHeight, 1);
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-      };
-
-      resize();
-      new ResizeObserver(resize).observe(viewer);
-
-      try {
-        const response = await fetch(source);
-        if (!response.ok) {
-          throw new Error(`Upload ${source} to show this model.`);
-        }
-
-        const buffer = await response.arrayBuffer();
-        const occt = await stepImportPromise;
-        const result = occt.ReadStepFile(new Uint8Array(buffer), null);
-
-        if (!result.success || !Array.isArray(result.meshes) || result.meshes.length === 0) {
-          throw new Error("The STEP file could not be converted into displayable geometry.");
-        }
-
-        const model = new THREE.Group();
-        result.meshes.forEach((mesh) => {
-          model.add(buildStepMesh(mesh));
-        });
-
-        scene.add(model);
-        fitCameraToObject(camera, controls, model);
-        viewer.parentElement.querySelector(".empty-step").hidden = true;
-
-        renderer.setAnimationLoop(() => {
-          controls.update();
-          renderer.render(scene, camera);
-        });
-      } catch (error) {
-        setStepStatus(viewer, modelName, error.message);
-        renderer.setAnimationLoop(() => {
-          controls.update();
-          renderer.render(scene, camera);
-        });
-      }
-    }
-
-    document.querySelectorAll(".step-viewer").forEach((viewer) => {
-      initStepViewer(viewer);
+      viewer.addEventListener("error", () => {
+        placeholder.hidden = false;
+      });
     });
   </script>
 </body>
