@@ -1,1 +1,847 @@
-Handroid Anonymous Website Test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Handroid project page: bridging dexterous hand and humanoid embodiments." />
+  <title>Handroid: Bridging Dexterous Hand and Humanoid</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --soft: #f5f7fb;
+      --soft-2: #eef4f7;
+      --text: #111827;
+      --muted: #5b6472;
+      --line: rgba(17, 24, 39, 0.12);
+      --accent-hand: #1f8a70;
+      --accent-human: #2f5f98;
+      --shadow: 0 16px 40px rgba(17, 24, 39, 0.08);
+      --radius: 14px;
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img,
+    video,
+    canvas {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .wide-container {
+      width: min(1560px, calc(100% - 24px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      gap: 20px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 66px 0 28px;
+      text-align: center;
+    }
+
+    .title {
+      width: 100%;
+      max-width: 1560px;
+      margin: 0 auto 16px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.04;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .main-video {
+      margin: 26px auto 58px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #0b1020;
+      box-shadow: var(--shadow);
+    }
+
+    .video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(135deg, rgba(31, 138, 112, 0.26), transparent 42%),
+        linear-gradient(315deg, rgba(47, 95, 152, 0.28), transparent 44%),
+        #0d1324;
+    }
+
+    .video-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .empty-video,
+    .empty-step {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .empty-video,
+    .empty-step {
+      display: grid;
+      place-items: center;
+      min-height: 100%;
+      padding: 28px;
+      color: rgba(255, 255, 255, 0.82);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .empty-video span,
+    .empty-step span {
+      display: block;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .step-media .empty-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(248, 250, 252, 0.84);
+      color: var(--text);
+    }
+
+    .step-media .empty-step span {
+      color: var(--muted);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    section[id] {
+      scroll-margin-top: 76px;
+    }
+
+    .split-stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 30px;
+      align-items: start;
+      padding: 8px 0 58px;
+    }
+
+    .cad-stage {
+      padding-bottom: 42px;
+    }
+
+    .task-stage {
+      padding-top: 0;
+    }
+
+    .split-stage::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 34px;
+      left: 50%;
+      width: 1px;
+      background: var(--line);
+    }
+
+    .mode-panel {
+      min-width: 0;
+    }
+
+    .mode-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mode-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .mode-dot.hand {
+      background: var(--accent-hand);
+    }
+
+    .mode-dot.humanoid {
+      background: var(--accent-human);
+    }
+
+    .mode-heading h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .step-box {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .step-media {
+      position: relative;
+      min-height: clamp(340px, 31vw, 500px);
+      aspect-ratio: 16 / 10;
+      background: #101827;
+    }
+
+    .step-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .step-viewer {
+      position: absolute;
+      inset: 0;
+      background: #f8fafc;
+    }
+
+    .step-viewer canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .step-media.hand {
+      background:
+        radial-gradient(circle at 30% 28%, rgba(31, 138, 112, 0.35), transparent 32%),
+        linear-gradient(135deg, #0f1b18, #111827);
+    }
+
+    .step-media.humanoid {
+      background:
+        radial-gradient(circle at 72% 26%, rgba(47, 95, 152, 0.38), transparent 34%),
+        linear-gradient(135deg, #101626, #111827);
+    }
+
+    .step-caption {
+      padding: 14px 16px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .video-section {
+      margin-top: 26px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .video-card-wide,
+    .humanoid-video-grid .video-card {
+      grid-column: 1 / -1;
+    }
+
+    .video-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(17, 24, 39, 0.06);
+    }
+
+    .video-card .video-frame {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .video-card h3 {
+      margin: 0;
+      padding: 12px 14px 4px;
+      font-size: 16px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .video-card p {
+      margin: 0;
+      padding: 0 14px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .placeholder-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+      padding: 28px 0 44px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .container {
+        width: min(100% - 28px, var(--max-width));
+      }
+
+      .wide-container {
+        width: min(100% - 16px, 1560px);
+      }
+
+      .nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        padding-top: 44px;
+      }
+
+      .split-stage {
+        grid-template-columns: 1fr;
+        gap: 44px;
+      }
+
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .split-stage::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <div class="wide-container nav-inner">
+      <a class="brand" href="#top">Handroid</a>
+      <div class="nav-links" aria-label="Page navigation">
+        <a href="#cad">CAD</a>
+        <a href="#task">Task</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header class="hero wide-container">
+      <h1 class="title">Handroid: Bridging Dexterous Hand and Humanoid</h1>
+      <p class="subtitle">
+        A project page for showing Handroid behavior in dexterous hand form and humanoid form.
+      </p>
+    </header>
+
+    <section id="long-horizon" class="wide-container" aria-labelledby="long-horizon-title">
+      <h2 id="long-horizon-title" class="section-title">Long-Horizon Task</h2>
+      <div class="main-video">
+        <div class="video-frame">
+          <!-- Main video across both dexterous hand and humanoid sections. -->
+          <video controls preload="metadata" poster="assets/images/overview-poster.jpg">
+            <source src="assets/videos/long-horizon-task.mp4" type="video/mp4">
+          </video>
+          <div class="empty-video">
+            Long-Horizon Task
+            <span>Use assets/videos/long-horizon-task.mp4 for the full-width video.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cad" class="wide-container split-stage cad-stage" aria-label="Handroid CAD models by embodiment">
+      <div id="hand-form" class="mode-panel">
+        <div class="mode-heading">
+          <span class="mode-dot hand" aria-hidden="true"></span>
+          <h2>Dexterous Hand Form</h2>
+        </div>
+
+        <figure class="step-box">
+          <div class="step-media hand">
+            <div class="step-viewer" data-step-src="assets/cad/dex-hand.step" data-step-name="Dexterous Hand STEP Model"></div>
+            <div class="empty-step">
+              Dexterous Hand STEP Model
+              <span>Upload assets/cad/dex-hand.step. Drag with the mouse to rotate; use the wheel to zoom.</span>
+            </div>
+          </div>
+          <figcaption class="step-caption">
+            Interactive STEP model for Handroid operating in dexterous hand form.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div id="humanoid-form" class="mode-panel">
+        <div class="mode-heading">
+          <span class="mode-dot humanoid" aria-hidden="true"></span>
+          <h2>Humanoid Form</h2>
+        </div>
+
+        <figure class="step-box">
+          <div class="step-media humanoid">
+            <div class="step-viewer" data-step-src="assets/cad/humanoid.step" data-step-name="Humanoid STEP Model"></div>
+            <div class="empty-step">
+              Humanoid STEP Model
+              <span>Upload assets/cad/humanoid.step. Drag with the mouse to rotate; use the wheel to zoom.</span>
+            </div>
+          </div>
+          <figcaption class="step-caption">
+            Interactive STEP model for Handroid operating in humanoid form.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="task" class="wide-container split-stage task-stage" aria-label="Handroid task videos by embodiment">
+      <div class="mode-panel">
+        <div class="video-section">
+          <h2 class="section-title">Dex-Hand Videos</h2>
+          <div class="video-grid">
+            <article class="video-card video-card-wide">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-dp-grasping-poster.jpg">
+                  <source src="assets/videos/dex-hand-dp-grasping.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>DP Grasping</h3>
+              <p>Dexterous hand grasping task.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-finger-teleop-poster.jpg">
+                  <source src="assets/videos/dex-hand-finger-teleop.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Finger Teleop</h3>
+              <p>Finger-level teleoperation behavior.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-bottle-cap-placement-poster.jpg">
+                  <source src="assets/videos/dex-hand-bottle-cap-placement.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Bottle Cap Placement</h3>
+              <p>Precise placement with dexterous hand control.</p>
+            </article>
+
+            <article class="video-card video-card-wide">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-cube-rotation-poster.jpg">
+                  <source src="assets/videos/dex-hand-cube-rotation.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Cube Rotation</h3>
+              <p>In-hand cube rotation task.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-cup-hanging-poster.jpg">
+                  <source src="assets/videos/dex-hand-cup-hanging.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Cup Hanging</h3>
+              <p>Cup manipulation and hanging behavior.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-cup-stacking-poster.jpg">
+                  <source src="assets/videos/dex-hand-cup-stacking.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Cup Stacking</h3>
+              <p>Stacking task with dexterous hand execution.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-dual-object-grasping-poster.jpg">
+                  <source src="assets/videos/dex-hand-dual-object-grasping.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Dual-Object Grasping</h3>
+              <p>Coordinated grasping over two objects.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-glove-removal-poster.jpg">
+                  <source src="assets/videos/dex-hand-glove-removal.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Glove Removal</h3>
+              <p>Contact-rich glove removal task.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-paper-grasping-poster.jpg">
+                  <source src="assets/videos/dex-hand-paper-grasping.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Paper Grasping</h3>
+              <p>Thin-object grasping with fine control.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/dex-hand-pouring-water-poster.jpg">
+                  <source src="assets/videos/dex-hand-pouring-water.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Pouring Water</h3>
+              <p>Dexterous pouring behavior.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="mode-panel">
+        <div class="video-section">
+          <h2 class="section-title">Humanoid Form Videos</h2>
+          <div class="video-grid humanoid-video-grid">
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/humanoid-pick-and-place-poster.jpg">
+                  <source src="assets/videos/humanoid-pick-and-place.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Pick &amp; Place</h3>
+              <p>Object pick-and-place behavior in humanoid form.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/humanoid-pull-up-poster.jpg">
+                  <source src="assets/videos/humanoid-pull-up.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Pull-up</h3>
+              <p>Whole-body pull-up behavior.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/humanoid-push-up-poster.jpg">
+                  <source src="assets/videos/humanoid-push-up.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Push-up</h3>
+              <p>Whole-body push-up behavior.</p>
+            </article>
+
+            <article class="video-card">
+              <div class="video-frame">
+                <video controls preload="metadata" poster="assets/images/humanoid-locomotion-command-poster.jpg">
+                  <source src="assets/videos/humanoid-locomotion-command.mp4" type="video/mp4">
+                </video>
+              </div>
+              <h3>Locomotion Command</h3>
+              <p>Command-following locomotion behavior.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Handroid: Bridging Dexterous Hand and Humanoid
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+  <script>
+    document.querySelectorAll(".video-frame").forEach((frame) => {
+      const video = frame.querySelector("video");
+      const placeholder = frame.querySelector(".empty-video");
+
+      if (!video || !placeholder) {
+        return;
+      }
+
+      video.addEventListener("loadedmetadata", () => {
+        placeholder.hidden = true;
+      });
+    });
+
+    const stepImportPromise = window.occtimportjs
+      ? window.occtimportjs()
+      : Promise.reject(new Error("STEP parser failed to load."));
+
+    function setStepStatus(viewer, title, message) {
+      const placeholder = viewer.parentElement.querySelector(".empty-step");
+      if (!placeholder) {
+        return;
+      }
+
+      placeholder.hidden = false;
+      placeholder.innerHTML = `${title}<span>${message}</span>`;
+    }
+
+    function buildStepMesh(resultMesh) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(resultMesh.attributes.position.array, 3)
+      );
+
+      if (resultMesh.attributes.normal) {
+        geometry.setAttribute(
+          "normal",
+          new THREE.Float32BufferAttribute(resultMesh.attributes.normal.array, 3)
+        );
+      } else {
+        geometry.computeVertexNormals();
+      }
+
+      geometry.setIndex(new THREE.BufferAttribute(Uint32Array.from(resultMesh.index.array), 1));
+
+      const meshColor = resultMesh.color
+        ? new THREE.Color(resultMesh.color[0], resultMesh.color[1], resultMesh.color[2])
+        : new THREE.Color(0xd7dee8);
+
+      const material = new THREE.MeshStandardMaterial({
+        color: meshColor,
+        roughness: 0.52,
+        metalness: 0.08,
+        side: THREE.DoubleSide
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geometry, 45),
+        new THREE.LineBasicMaterial({
+          color: 0x1f2937,
+          transparent: true,
+          opacity: 0.26
+        })
+      );
+
+      const group = new THREE.Group();
+      group.add(mesh);
+      group.add(edges);
+      return group;
+    }
+
+    function fitCameraToObject(camera, controls, object) {
+      const box = new THREE.Box3().setFromObject(object);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      object.position.sub(center);
+
+      const centeredBox = new THREE.Box3().setFromObject(object);
+      const centeredSize = centeredBox.getSize(new THREE.Vector3());
+      const centeredTarget = centeredBox.getCenter(new THREE.Vector3());
+
+      const maxSize = Math.max(centeredSize.x, centeredSize.y, centeredSize.z) || 1;
+      const fov = THREE.MathUtils.degToRad(camera.fov);
+      const distance = (maxSize / (2 * Math.tan(fov / 2))) * 1.45;
+
+      camera.near = Math.max(distance / 100, 0.01);
+      camera.far = distance * 100;
+      camera.position.set(
+        centeredTarget.x + distance * 0.75,
+        centeredTarget.y - distance * 0.95,
+        centeredTarget.z + distance * 0.62
+      );
+      camera.lookAt(centeredTarget);
+      camera.updateProjectionMatrix();
+
+      controls.target.copy(centeredTarget);
+      controls.update();
+    }
+
+    async function initStepViewer(viewer) {
+      const source = viewer.dataset.stepSrc;
+      const modelName = viewer.dataset.stepName || "STEP Model";
+
+      setStepStatus(viewer, modelName, "Loading interactive STEP viewer...");
+
+      if (!source) {
+        setStepStatus(viewer, modelName, "Missing STEP file path.");
+        return;
+      }
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setClearColor(0xf8fafc, 1);
+      viewer.appendChild(renderer.domElement);
+      viewer.addEventListener("contextmenu", (event) => event.preventDefault());
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf8fafc);
+
+      const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 1000000);
+      camera.up.set(0, 0, 1);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.enableZoom = true;
+      controls.mouseButtons = {
+        LEFT: THREE.MOUSE.ROTATE,
+        MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.ROTATE
+      };
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.62);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 0.82);
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.32);
+      keyLight.position.set(4, -5, 6);
+      fillLight.position.set(-4, 4, 3);
+      scene.add(ambientLight, keyLight, fillLight);
+
+      const resize = () => {
+        const width = Math.max(viewer.clientWidth, 1);
+        const height = Math.max(viewer.clientHeight, 1);
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      };
+
+      resize();
+      new ResizeObserver(resize).observe(viewer);
+
+      try {
+        const response = await fetch(source);
+        if (!response.ok) {
+          throw new Error(`Upload ${source} to show this model.`);
+        }
+
+        const buffer = await response.arrayBuffer();
+        const occt = await stepImportPromise;
+        const result = occt.ReadStepFile(new Uint8Array(buffer), null);
+
+        if (!result.success || !Array.isArray(result.meshes) || result.meshes.length === 0) {
+          throw new Error("The STEP file could not be converted into displayable geometry.");
+        }
+
+        const model = new THREE.Group();
+        result.meshes.forEach((mesh) => {
+          model.add(buildStepMesh(mesh));
+        });
+
+        scene.add(model);
+        fitCameraToObject(camera, controls, model);
+        viewer.parentElement.querySelector(".empty-step").hidden = true;
+
+        renderer.setAnimationLoop(() => {
+          controls.update();
+          renderer.render(scene, camera);
+        });
+      } catch (error) {
+        setStepStatus(viewer, modelName, error.message);
+        renderer.setAnimationLoop(() => {
+          controls.update();
+          renderer.render(scene, camera);
+        });
+      }
+    }
+
+    document.querySelectorAll(".step-viewer").forEach((viewer) => {
+      initStepViewer(viewer);
+    });
+  </script>
+</body>
+</html>
