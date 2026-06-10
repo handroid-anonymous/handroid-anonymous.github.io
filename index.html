@@ -146,15 +146,13 @@
       object-fit: contain;
     }
 
-    .empty-video,
-    .empty-step {
+    .empty-video {
       position: absolute;
       inset: 0;
       pointer-events: none;
     }
 
-    .empty-video,
-    .empty-step {
+    .empty-video {
       display: grid;
       place-items: center;
       min-height: 100%;
@@ -164,27 +162,12 @@
       font-weight: 700;
     }
 
-    .empty-video span,
-    .empty-step span {
+    .empty-video span {
       display: block;
       color: rgba(255, 255, 255, 0.58);
       font-size: 14px;
       font-weight: 500;
       margin-top: 8px;
-    }
-
-    .step-media .empty-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: rgba(248, 250, 252, 0.84);
-      color: var(--text);
-    }
-
-    .step-media .empty-step span {
-      color: var(--muted);
     }
 
     .section-title {
@@ -264,7 +247,7 @@
       overflow: hidden;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--panel);
+      background: #20242b;
       box-shadow: var(--shadow);
     }
 
@@ -272,7 +255,9 @@
       position: relative;
       min-height: clamp(340px, 31vw, 500px);
       aspect-ratio: 16 / 10;
-      background: #101827;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.18), transparent 36%),
+        linear-gradient(145deg, #4c5159 0%, #2b3038 52%, #171b21 100%);
     }
 
     .step-media video {
@@ -285,7 +270,10 @@
     .cad-viewer {
       position: absolute;
       inset: 0;
-      background: #f8fafc;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.18), transparent 36%),
+        linear-gradient(145deg, #4c5159 0%, #2b3038 52%, #171b21 100%);
+      --poster-color: #2b3038;
     }
 
     .step-viewer canvas,
@@ -296,20 +284,14 @@
 
     .step-media.hand {
       background:
-        radial-gradient(circle at 30% 28%, rgba(31, 138, 112, 0.35), transparent 32%),
-        linear-gradient(135deg, #0f1b18, #111827);
+        radial-gradient(circle at 30% 28%, rgba(31, 138, 112, 0.28), transparent 34%),
+        linear-gradient(145deg, #4c5159 0%, #2b3038 52%, #171b21 100%);
     }
 
     .step-media.humanoid {
       background:
-        radial-gradient(circle at 72% 26%, rgba(47, 95, 152, 0.38), transparent 34%),
-        linear-gradient(135deg, #101626, #111827);
-    }
-
-    .step-caption {
-      padding: 14px 16px 16px;
-      color: var(--muted);
-      font-size: 14px;
+        radial-gradient(circle at 72% 26%, rgba(47, 95, 152, 0.28), transparent 34%),
+        linear-gradient(145deg, #4c5159 0%, #2b3038 52%, #171b21 100%);
     }
 
     .video-section {
@@ -456,18 +438,13 @@
               alt="Dexterous Hand CAD Model"
               camera-controls
               touch-action="pan-y"
-              interaction-prompt="auto"
-              exposure="0.9"
-              shadow-intensity="0.35">
+              interaction-prompt="none"
+              environment-image="neutral"
+              exposure="0.55"
+              shadow-intensity="0.85"
+              shadow-softness="0.65">
             </model-viewer>
-            <div class="empty-step">
-              Dexterous Hand CAD Model
-              <span>Loading assets/cad/dex-hand.glb. Drag with the mouse to rotate; use the wheel to zoom.</span>
-            </div>
           </div>
-          <figcaption class="step-caption">
-            Interactive CAD model for Handroid operating in dexterous hand form.
-          </figcaption>
         </figure>
       </div>
 
@@ -485,18 +462,13 @@
               alt="Humanoid CAD Model"
               camera-controls
               touch-action="pan-y"
-              interaction-prompt="auto"
-              exposure="0.9"
-              shadow-intensity="0.35">
+              interaction-prompt="none"
+              environment-image="neutral"
+              exposure="0.55"
+              shadow-intensity="0.85"
+              shadow-softness="0.65">
             </model-viewer>
-            <div class="empty-step">
-              Humanoid CAD Model
-              <span>Loading assets/cad/humanoid.glb. Drag with the mouse to rotate; use the wheel to zoom.</span>
-            </div>
           </div>
-          <figcaption class="step-caption">
-            Interactive CAD model for Handroid operating in humanoid form.
-          </figcaption>
         </figure>
       </div>
     </section>
@@ -665,34 +637,5 @@
   </footer>
 
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script>
-    document.querySelectorAll(".video-frame").forEach((frame) => {
-      const video = frame.querySelector("video");
-      const placeholder = frame.querySelector(".empty-video");
-
-      if (!video || !placeholder) {
-        return;
-      }
-
-      video.addEventListener("loadedmetadata", () => {
-        placeholder.hidden = true;
-      });
-    });
-
-    document.querySelectorAll(".cad-viewer").forEach((viewer) => {
-      const placeholder = viewer.parentElement.querySelector(".empty-step");
-      if (!placeholder) {
-        return;
-      }
-
-      viewer.addEventListener("load", () => {
-        placeholder.hidden = true;
-      });
-
-      viewer.addEventListener("error", () => {
-        placeholder.hidden = false;
-      });
-    });
-  </script>
 </body>
 </html>
