@@ -294,6 +294,27 @@
         linear-gradient(145deg, #4c5159 0%, #2b3038 52%, #171b21 100%);
     }
 
+    .interaction-hint {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: calc(100% - 28px);
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.72);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+
     .video-section {
       margin-top: 26px;
     }
@@ -407,7 +428,7 @@
     <header class="hero wide-container">
       <h1 class="title">Handroid: Bridging Dexterous Hand and Humanoid</h1>
       <p class="subtitle">
-        Anonymous
+        Anonymous Release Version
       </p>
     </header>
 
@@ -434,7 +455,7 @@
           <div class="step-media hand">
             <model-viewer
               class="cad-viewer"
-              src="assets/cad/dex-hand.glb"
+              src="assets/cad/dex-hand.glb?v=20260610"
               alt="Dexterous Hand CAD Model"
               camera-controls
               touch-action="pan-y"
@@ -444,6 +465,10 @@
               shadow-intensity="0.85"
               shadow-softness="0.65">
             </model-viewer>
+            <div class="interaction-hint" aria-hidden="true">
+              <span>Drag to rotate</span>
+              <span>Scroll to zoom</span>
+            </div>
           </div>
         </figure>
       </div>
@@ -458,16 +483,21 @@
           <div class="step-media humanoid">
             <model-viewer
               class="cad-viewer"
-              src="assets/cad/humanoid.glb"
+              src="assets/cad/humanoid.glb?v=20260610"
               alt="Humanoid CAD Model"
               camera-controls
               touch-action="pan-y"
               interaction-prompt="none"
               environment-image="neutral"
+              camera-orbit="180deg 75deg auto"
               exposure="0.55"
               shadow-intensity="0.85"
               shadow-softness="0.65">
             </model-viewer>
+            <div class="interaction-hint" aria-hidden="true">
+              <span>Drag to rotate</span>
+              <span>Scroll to zoom</span>
+            </div>
           </div>
         </figure>
       </div>
